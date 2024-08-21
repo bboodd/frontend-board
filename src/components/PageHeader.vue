@@ -1,21 +1,19 @@
 <!-- PageHeader.vue -->
 <template>
     <header>
-      <div id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link> |
-        <router-link to="/board/list">게시판</router-link>
-      </div>
+        <div id="nav">
+            <RouterLink to="/">Home</RouterLink> |
+            <RouterLink to="/about">About</RouterLink> |
+            <RouterLink :to="{name: postList}">게시판</RouterLink>
+        </div>
     </header>
     <hr/>
-  </template>
+</template>
   
-  <script>
-  export default {
+<script setup>
+
+</script>
   
-  }
-  </script>
+<style scoped>
   
-  <style scoped>
-  
-  </style>
+</style>
