@@ -1,8 +1,12 @@
 <template>
     <div class="post-list">
         <div>
-            검색
-        </div>
+            <SearchInput />
+        </div><br />
+
+        <div class="w3-large" style="text-align: left;">
+            총 {{ postList.length }}건
+        </div><br />
 
         <table class="w3-table-all">
             <colgroup>
@@ -56,6 +60,7 @@ import { useRouter } from 'vue-router';
 import { usePostStore } from '@/stores/post';
 import { onMounted } from 'vue';
 import moment from 'moment';
+import SearchInput from './SearchInput.vue';
 
 const postStore = usePostStore();
 const router = useRouter();

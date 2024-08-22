@@ -83,11 +83,10 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
-import { reactive } from 'vue';
+import { reactive, onMounted } from 'vue';
 import { usePostStore } from '@/stores/post';
 import { useCategoryStore } from '@/stores/category';
 import { useRoute } from 'vue-router';
-import { onMounted } from 'vue';
 import moment from 'moment';
 
 const route = useRoute();
