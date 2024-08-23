@@ -97,7 +97,7 @@ const deletePost = () => {
 };
 
 const goListPage = () => {
-
+    router.push(({name: 'postList'}));
 };
 
 const dateFormat = (date) => {
