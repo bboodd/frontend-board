@@ -21,7 +21,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
-import { reactive, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { usePostStore } from '@/stores/post';
 import { useCategoryStore } from '@/stores/category';
 
@@ -29,20 +29,14 @@ const postStore = usePostStore();
 const categoryStore = useCategoryStore();
 
 const { categoryList } = storeToRefs(categoryStore); 
+const { searchInfo } = storeToRefs(postStore);
 
 onMounted(() => {
     categoryStore.getCategoryList();
 })
 
-let searchInfo = reactive({
-    startDate: '',
-    endDate: '',
-    categoryId: '0',
-    keyword: ''
-});
-
 const searchPostList = () => {
-    postStore.searchPostList(searchInfo);
+    postStore.getPostList();
 }
 </script>
 

@@ -25,7 +25,7 @@
             </thead>
 
             <!-- 리스트 데이터 렌더링 영역 -->
-            <tbody>
+            <tbody v-if="postList.length">
                 <tr v-for="row in postList" :key="row.postId">
                     <td>{{ row.categoryName }}</td>
                     <td v-if="row.fileCount > 0"><i class="glyphicon glyphicon-file"></i></td>
@@ -40,11 +40,28 @@
                     <td v-else>-</td>
                 </tr>
             </tbody>
+            <tbody v-else>
+                <td colspan="6"><div className="no_data_msg">검색된 결과가 없습니다.</div></td>
+            </tbody>
         </table>
 
         <!-- 페이지네이션 렌더링 영역 -->
-        <div id="paging" class="pagination w3-bar w3-padding-16 w3-small">
-
+        <div v-if="!pagination || !searchInfo">
+            &nbsp;
+        </div>
+        <div v-else class="pagination w3-bar w3-padding-16 w3-small">
+            <strong v-if="pagination.existPrevPage">
+                <a href="javascript:void(0);" @click="movePage(1)">첫 페이지</a>
+                <a href="javascript:void(0);" @click="movePage(pagination.startPage - 1)">이전 페이지</a>
+            </strong>
+            <strong v-for="i in pagination.endPage" :key="i">
+                <a v-if="i !== searchInfo.page" @click="movePage(i)" href="javascript:void(0);">{{ i }}</a>
+                <span v-else>{{ i }}</span>&nbsp;
+            </strong>
+            <strong v-if="pagination.existNextPage">
+                <a href="javascript:void(0);" @click="movePage(pagination.endPage + 1)">다음 페이지</a>
+                <a href="javascript:void(0);" @click="movePage(pagination.totalPageCount)">마지막 페이지</a>
+            </strong>
         </div>
 
         <!-- 버튼 -->
@@ -64,7 +81,7 @@ import SearchInput from './SearchInput.vue';
 
 const postStore = usePostStore();
 const router = useRouter();
-const { postList } = storeToRefs(postStore);
+const { postList, pagination, searchInfo } = storeToRefs(postStore);
 
 onMounted(() => {
     postStore.getPostList();
@@ -77,6 +94,13 @@ const goWritePage = () => {
 const dateFormat = (date) => {
     return moment(date).format("YYYY.MM.DD hh:MM");
 };
+
+const movePage = (page) => {
+    console.log(pagination);
+    searchInfo.value.page = page;
+
+    postStore.getPostList();
+}
 
 
 
