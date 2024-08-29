@@ -1,233 +1,373 @@
 <template>
-    <div class="post-write">
-        <fieldset>
-            <table class="w3-table-all">
-                <colgroup>
-                    <col style="width:15%;" /><col style="width:35%;" /><col style="width:15%;" /><col style="width:35%;" />
-                </colgroup>
-                <tbody>
+  <div class="post-write">
+    <fieldset>
+      <table class="w3-table-all">
+        <colgroup>
+          <col style="width: 15%" />
+          <col style="width: 35%" />
+          <col style="width: 15%" />
+          <col style="width: 35%" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <th scope="row">카테고리</th>
+            <td colspan="3">
+              <select v-model="requestPost.categoryId">
+                <option
+                  v-for="category in categoryList"
+                  :key="category.categoryId"
+                  :value="category.categoryId"
+                >
+                  {{ category.categoryName }}
+                </option>
+              </select>
+            </td>
+          </tr>
 
-                <tr>
-                    <th scope="row">카테고리</th>
-                    <td colspan="3">
-                        <select id="categoryId" v-model="requestPost.categoryId">
-                            <option v-for=" category in categoryList" :value="category.categoryId" :key="category.categoryId">{{ category.categoryName }}</option>
-                        </select>
-                    </td>
-                </tr>
+          <tr v-if="postId">
+            <th>등록일시</th>
+            <td colspan="3">
+              {{ formatDate(post.createDate) }}
+            </td>
+          </tr>
+          <tr v-if="postId">
+            <th>수정일시</th>
+            <td v-if="post.createDate != post.updateDate">
+              {{ formatDate(post.updateDate) }}
+            </td>
+            <td v-else>-</td>
+          </tr>
+          <tr v-if="postId">
+            <th>조회수</th>
+            <td colspan="3">
+              {{ post.viewCount }}
+            </td>
+          </tr>
 
-                <tr v-if="postId">
-                    <th>등록일시</th>
-                    <td colspan="3">{{ dateFormat(post.createDate) }}</td>
-                </tr>
-                <tr v-if="postId">
-                    <th>수정일시</th>
-                    <td v-if="post.createDate != post.updateDate">{{ dateFormat(post.updateDate) }}</td>
-                    <td v-else>-</td>
-                </tr>
-                <tr v-if="postId">
-                    <th>조회수</th>
-                    <td colspan="3">{{ post.viewCount }}</td>
-                </tr>
+          <tr>
+            <th>작성자</th>
+            <td colspan="3">
+              <input
+                v-model="requestPost.writer"
+                type="text"
+                maxlength="10"
+                placeholder="이름을 입력해 주세요."
+              />
+            </td>
+          </tr>
 
-                <tr>
-                    <th>작성자</th>
-                    <td colspan="3"><input type="text" id="writer" maxlength="10" placeholder="이름을 입력해 주세요." v-model="requestPost.writer"/></td>
-                </tr>
+          <tr>
+            <th scope="row">비밀번호</th>
+            <td colspan="3">
+              <input
+                v-model="requestPost.password"
+                type="password"
+                maxlength="16"
+                placeholder="비밀번호를 입력해 주세요."
+              />&nbsp;
+              <input
+                v-model="requestPost.checkPassword"
+                type="password"
+                maxlength="16"
+                placeholder="비밀번호 확인"
+              />
+            </td>
+          </tr>
 
-                <tr>
-                    <th scope="row">비밀번호</th>
-                    <td colspan="3">
-                        <input type="password" id="password" maxlength="16" placeholder="비밀번호를 입력해 주세요." v-model="requestPost.password"/>&nbsp;
-                        <input type="password" id="checkPassword" maxlength="16" placeholder="비밀번호 확인" v-model="requestPost.checkPassword"/>
-                    </td>
-                </tr>
+          <tr>
+            <th>제목</th>
+            <td colspan="3">
+              <input
+                v-model="requestPost.title"
+                type="text"
+                maxlength="50"
+                placeholder="제목을 입력해 주세요."
+              />
+            </td>
+          </tr>
 
-                <tr>
-                    <th>제목</th>
-                    <td colspan="3"><input type="text" id="title" maxlength="50" placeholder="제목을 입력해 주세요." v-model="requestPost.title"/></td>
-                </tr>
+          <tr>
+            <th>내용</th>
+            <td colspan="3">
+              <textarea
+                v-model="requestPost.content"
+                cols="50"
+                rows="10"
+                placeholder="내용을 입력해 주세요."
+              ></textarea>
+            </td>
+          </tr>
 
-                <tr>
-                    <th>내용</th>
-                    <td colspan="3"><textarea id="content" cols="50" rows="10" placeholder="내용을 입력해 주세요." v-model="requestPost.content"></textarea></td>
-                </tr>
+          <tr>
+            <th>첨부파일</th>
+            <td colspan="3">
+              <div class="file_list">
+                <div v-for="(file, idx) in requestPost.files" :key="idx">
+                  <div class="file_input">
+                    <input
+                      class="upload-name"
+                      placeholder="첨부파일"
+                      v-model="file.name"
+                      readonly
+                    />
+                    <button
+                      @click="nextClickFunc"
+                      class="select-down-btn w3-button w3-round w3-gray"
+                    >
+                      파일선택
+                    </button>
+                    <input
+                      style="display: none"
+                      type="file"
+                      @change="selectFile($event, idx)"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="del-btn w3-button w3-round w3-red"
+                    @click="removeFile($event, idx, file.fileId)"
+                  >
+                    <span>삭제</span></button
+                  >&nbsp;
+                  <button
+                    v-if="idx === 0"
+                    type="button"
+                    class="add-btn w3-button w3-round w3-blue-gray"
+                    @click="addFile"
+                  >
+                    <span>파일추가</span>
+                  </button>
+                </div>
 
-                <tr>
-                    <th>첨부파일</th>
-                    <td colspan="3">
-                        <div class="file_list">
-                            <div>
-                                <div class="file_input">
-                                    <input type="text" readonly />
-                                    <label> 첨부파일
-                                        <input type="file" name="files" @change="selectFile(this);" />
-                                    </label>
-                                </div>
-                                <button type="button" @click="removeFile(this);" class="w3-button w3-round w3-blue-gray"><span>삭제</span></button>&nbsp;
-                                <button type="button" @click="addFile;" class="w3-button w3-round w3-blue-gray"><span>파일 추가</span></button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </fieldset>
+                <div v-if="fileList?.length">
+                  <div v-for="(file, idx) in fileList" :key="idx">
+                    <div class="file_input">
+                      <input
+                        class="upload-name"
+                        v-model="file.fileOriginalName"
+                        readonly
+                      />
+                      <button
+                        @click="
+                          downloadFile(
+                            post.postId,
+                            file.fileId,
+                            file.fileOriginalName,
+                          )
+                        "
+                        class="select-down-btn w3-button w3-round w3-pale-red"
+                      >
+                        다운로드
+                      </button>
+                    </div>
 
-        <p class="btn_set">
-            <button type="button" @click="saveBtn" class="w3-button w3-round w3-blue-gray" style="float: right;">저장</button>
-            <button type="button" @click="cancelBtn" class="w3-button w3-round w3-gray" style="float: left;">취소</button>
-        </p>
-    </div>
+                    <button
+                      type="button"
+                      class="del-btn w3-button w3-round w3-red"
+                      @click="removeFile($event, idx, file.fileId)"
+                    >
+                      <span>삭제</span></button
+                    >&nbsp;
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset>
+
+    <p class="btn_set">
+      <button
+        type="button"
+        class="w3-button w3-round w3-blue-gray"
+        style="float: right"
+        @click="saveBtn"
+      >
+        저장
+      </button>
+      <button
+        type="button"
+        class="w3-button w3-round w3-gray"
+        style="float: left"
+        @click="cancelBtn"
+      >
+        취소
+      </button>
+    </p>
+  </div>
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia';
-import { reactive, onMounted } from 'vue';
-import { usePostStore } from '@/stores/post';
-import { useCategoryStore } from '@/stores/category';
-import { useRoute, useRouter } from 'vue-router';
-import moment from 'moment';
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { getPost, updatePost, savePost } from "@/api/postService";
+import { getCategoryList } from "@/api/categoryService";
+import { formatDate } from "@/utils/filters";
+import { getFileList } from "@/api/fileService";
+import { downloadFile } from "@/api/fileService";
 
 const route = useRoute();
+
 const router = useRouter();
 
-const postStore = usePostStore();
-const categoryStore = useCategoryStore();
+const post = ref({});
 
-const { categoryList } = storeToRefs(categoryStore);
-const { post } = storeToRefs(postStore);
+const categoryList = ref([]);
 
-const postId = route.params.postId;
+const fileList = ref([]);
 
-const requestPost = reactive({
-    categoryId: '1',
-    writer: '',
-    password: '',
-    checkPassword: '',
-    title: '',
-    content: '',
-    files: [],
-    removeFileIds: []
+const { postId } = route.params;
+
+const requestPost = ref({
+  categoryId: "1",
+  writer: "",
+  password: "",
+  checkPassword: "",
+  title: "",
+  content: "",
+  files: [{}],
+  removeFileIds: [],
 });
 
 onMounted(() => {
-    categoryStore.getCategoryList();
-    if (postId) {
-        postStore.getPost(postId);
-        setPostData();
-    }
+  getCategoryList().then((res) => {
+    categoryList.value = res;
+  });
+  if (postId) {
+    getPost(postId).then((res) => {
+      post.value = res;
+      setRequestPostData();
+    });
+    getFileList(postId).then((res) => {
+      fileList.value = res;
+    });
+  }
 });
 
-const saveBtn = () => {
-    setAddFiles();
-    if (postId) {
-        postStore.updatePost(postId, requestPost);
-    } else {
-        postStore.savePost(requestPost);
-    }
+const setRequestPostData = () => {
+  requestPost.value.categoryId = post.value.categoryId;
+  requestPost.value.writer = post.value.writer;
+  requestPost.value.title = post.value.title;
+  requestPost.value.content = post.value.content;
 };
 
-const setPostData = () => {
-    requestPost.categoryId = post.categoryId;
-    requestPost.writer = post.writer;
-    requestPost.title = post.title;
-    requestPost.content = post.content;
-}
+const nextClickFunc = (e) => {
+  e.target.nextElementSibling.click();
+};
 
-const setAddFiles = () => {
-    const fileInputs = document.querySelectorAll('.file_list input[type="file"]');
-    fileInputs.forEach(input => {
-        if(input.files[0]){
-            requestPost.files.push(input.files[0]);
-        }
+const saveBtn = () => {
+  if (postId) {
+    updatePost(postId, requestPost.value).then(() => {
+      router.push({
+        name: "postDetail",
+        params: { postId: postId },
+        query: route.query,
+      });
     });
-}
+  } else {
+    savePost(requestPost.value).then(() => {
+      router.push({ name: "postList", query: route.query });
+    });
+  }
+};
 
 const cancelBtn = () => {
-    if (postId) {
-        router.push(({name: 'postDetail'}), postId);
-    } else {
-        router.push(({name: 'postList'}));
-    }
+  if (postId) {
+    router.push({
+      name: "postDetail",
+      params: { postId: postId },
+      query: route.query,
+    });
+  } else {
+    router.push({ name: "postList", query: route.query });
+  }
 };
 
-const dateFormat = (date) => {
-    return moment(date).format("YYYY.MM.DD hh:MM");
+const removeFileId = (fileId) => {
+  if (requestPost.value.removeFileIds.includes(fileId)) {
+    return false;
+  }
+  requestPost.value.removeFileIds.push(fileId);
 };
 
-const removeFileId = () => {
-    return {
-        add(fileId) {
-            if (requestPost.removeFileIds.includes(fileId)){
-                return false;
-            }
-            requestPost.removeFileIds.push(fileId);
-        }
-    }
-}
+const selectFile = (e, idx, fileId) => {
+  const file = e.target.files[0];
 
-// TODO: e.target.value 적용해야함
-// 파일 선택
-const selectFile = (element, fileId) => {
+  // 1. 파일 선택 창에서 취소 버튼이 클릭된 경우
+  if (!file) {
+    return false;
+  }
 
-    const file = element.files[0];
-    const fileName = element.closest('.file_input').firstElementChild;
+  // 2. 파일 크기가 10MB를 초과하는 경우
+  const fileSize = Math.floor(file.size / 1024 / 1024);
+  if (fileSize > 10) {
+    alert("10MB 이하의 파일을 업로드 해 주세요.");
+    e.target.value = "";
+    return false;
+  }
 
-    // 1. 파일 선택 창에서 취소 버튼이 클릭된 경우
-    if ( !file ) {
-        fileName.value = '';
-        return false;
-    }
+  // 3. 파일 리스트에 추가
+  requestPost.value.files[idx] = file;
 
-    // 2. 파일 크기가 10MB를 초과하는 경우
-    const fileSize = Math.floor(file.size / 1024 / 1024);
-    if (fileSize > 10) {
-        alert('10MB 이하의 파일을 업로드 해 주세요.');
-        fileName.value = '';
-        element.value = '';
-        return false;
-    }
-
-    // 3. 파일명 지정
-    fileName.value = file.name;
-
-    // 4. 삭제할 파일 id 추가
-    if (fileId) {
-        removeFile.add(fileId);
-    }
+  // 4. 삭제할 파일 id 추가
+  if (fileId) {
+    removeFile(fileId);
+  }
 };
 
 const addFile = () => {
-    const fileDiv = document.createElement('div');
-    fileDiv.innerHTML =`
-        <div class="file_input">
-            <input type="text" readonly />
-            <label> 첨부파일
-                <input type="file" name="files" onchange="selectFile(this);" />
-            </label>
-        </div>
-        <button type="button" onclick="removeFile(this);" class="w3-button w3-round w3-blue-gray"><span>삭제</span></button>
-    `;
-    document.querySelector('.file_list').appendChild(fileDiv);
+  requestPost.value.files.push({});
 };
 
-const removeFile = (element, fileId) => {
+const removeFile = (e, idx, fileId) => {
+  if (fileId) {
+    removeFileId(fileId);
+    fileList.value.splice(idx, 1);
+    return false;
+  }
 
-    if (fileId) {
-        removeFileId.add(fileId);
-    }
+  if (idx === 0 && requestPost.value.files.length === 1) {
+    requestPost.value.files = [{}];
+    return false;
+  }
 
-    const fileAddBtn = element.nextElementSibling;
-    if (fileAddBtn) {
-        const inputs = element.previousElementSibling.querySelectorAll('input');
-        inputs.forEach(input => input.value = '');
-        return false;
-    }
-
-    element.parentElement.remove();
-
-
-}
-
+  requestPost.value.files.splice(idx, 1);
+};
 </script>
+
+<style scoped>
+.file_list .upload-name {
+  display: inline-block;
+  height: 40px;
+  padding: 0 10px;
+  vertical-align: middle;
+  border: 1px solid #dddddd;
+  width: 75%;
+  color: #999999;
+}
+.file_list input[type="file"] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+}
+.file_list .select-down-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  color: #fff;
+  vertical-align: middle;
+  background-color: #999999;
+  cursor: pointer;
+  height: 40px;
+  margin-left: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.file_input {
+  display: inline-block;
+  width: 75%;
+}
+</style>
