@@ -1,18 +1,31 @@
 <template>
-  <PageHeader />
-  <RouterView />
-  <PageFooter />
+  <ErrorBoundary>
+    <PageHeader />
+    <Suspense>
+      <template #default>
+        <RouterView />
+      </template>
+      <template #fallback>
+        <LoadingView />
+      </template>
+    </Suspense>
+    <PageFooter />
+  </ErrorBoundary>
 </template>
 
 <script>
-import PageFooter from "@/components/PageFooter";
-import PageHeader from "@/components/PageHeader";
+import PageFooter from "@/components/common/PageFooter";
+import PageHeader from "@/components/common/PageHeader";
+import ErrorBoundary from "@/components/error/ErrorBoundary";
+import LoadingView from "@/views/LoadingView";
 
 export default {
   name: "App",
   components: {
     PageHeader,
     PageFooter,
+    ErrorBoundary,
+    LoadingView,
   },
 };
 </script>
