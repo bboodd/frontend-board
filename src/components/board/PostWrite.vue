@@ -232,10 +232,13 @@ const requestPost = ref({
 });
 
 onMounted(() => {
+  // 카테고리 조회
   getCategoryList().then((res) => {
     categoryList.value = res;
   });
+
   if (postId) {
+    // 게시글정보 및 파일 정보 조회
     getPost(postId).then((res) => {
       post.value = res;
       setRequestPostData();
@@ -246,6 +249,9 @@ onMounted(() => {
   }
 });
 
+/**
+ * 수정 페이지일 경우 데이터 변경 시키는 함수
+ */
 const setRequestPostData = () => {
   requestPost.value.categoryId = post.value.categoryId;
   requestPost.value.writer = post.value.writer;
@@ -253,10 +259,18 @@ const setRequestPostData = () => {
   requestPost.value.content = post.value.content;
 };
 
+/**
+ * 파일 input 안보이게 하고 버튼 클릭시 파일 선택하게하는 함수
+ * @param e - event
+ */
 const nextClickFunc = (e) => {
   e.target.nextElementSibling.click();
 };
 
+/**
+ * 저장 함수
+ * 유효성 검증 후 postId유무에 따라 save or update
+ */
 const saveBtn = () => {
   validation();
   if (postId) {
@@ -274,6 +288,11 @@ const saveBtn = () => {
   }
 };
 
+/**
+ * 취소버튼 함수
+ * postId가 있다면 detail 페이지로
+ * 없다면 list 페이지로
+ */
 const cancelBtn = () => {
   if (postId) {
     router.push({
@@ -286,6 +305,11 @@ const cancelBtn = () => {
   }
 };
 
+/**
+ * removeFileIds 에 fileId 추가
+ * 이미 포함되어 있다면 false
+ * @param fileId - id
+ */
 const removeFileId = (fileId) => {
   if (requestPost.value.removeFileIds.includes(fileId)) {
     return false;
@@ -293,6 +317,12 @@ const removeFileId = (fileId) => {
   requestPost.value.removeFileIds.push(fileId);
 };
 
+/**
+ * file onChange 함수
+ * @param e - event
+ * @param idx - index
+ * @param fileId - id
+ */
 const selectFile = (e, idx, fileId) => {
   const file = e.target.files[0];
 
@@ -318,10 +348,20 @@ const selectFile = (e, idx, fileId) => {
   }
 };
 
+/**
+ * fileList에 빈 객체 추가
+ */
 const addFile = () => {
   requestPost.value.files.push({});
 };
 
+/**
+ * 파일id가 있다면 id list에 추가
+ * fileList 에서 값 삭제
+ * @param e - event
+ * @param idx - index
+ * @param fileId - id
+ */
 const removeFile = (e, idx, fileId) => {
   if (fileId) {
     removeFileId(fileId);
@@ -337,6 +377,9 @@ const removeFile = (e, idx, fileId) => {
   requestPost.value.files.splice(idx, 1);
 };
 
+/**
+ * 게시글 등록/수정 전 유효성 검증
+ */
 const validation = () => {
   const fields = [
     requestPost.value.writer,

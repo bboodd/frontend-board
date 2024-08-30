@@ -49,6 +49,7 @@ const searchInfo = ref({
 });
 
 onMounted(() => {
+  // 카테고리 리스트 조회
   getCategoryList().then((res) => {
     categoryList.value = res;
   });

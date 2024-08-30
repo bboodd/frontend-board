@@ -102,7 +102,7 @@
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import { formatDate } from "@/utils/filters";
-import { getPost } from "@/api/postService";
+import { getPost, deletePost } from "@/api/postService";
 import { getFileList, downloadFile } from "@/api/fileService";
 import PostComment from "./PostComment.vue";
 import ConfirmPassword from "./ConfirmPassword.vue";
@@ -143,7 +143,9 @@ const successConfirm = (parent) => {
     goWritePage();
   }
   if (parent === "delete") {
-    deletePost();
+    deletePost(postId).then(() => {
+      alert("게시글 삭제 완료");
+    });
   }
 };
 
@@ -157,14 +159,16 @@ const deleteConfirm = () => {
   parent.value = "delete";
 };
 
-const deletePost = () => {
-  flag.value = true;
-};
-
+/**
+ * 게시글 수정 페이지 이동 함수
+ */
 const goWritePage = () => {
   router.push({ name: "postUpdate", params: postId, query: route.query });
 };
 
+/**
+ * 리스트 페이지 이동 함수
+ */
 const goListPage = () => {
   router.push({ name: "postList", query: route.query });
 };
