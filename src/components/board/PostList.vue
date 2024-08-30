@@ -140,6 +140,7 @@ const searchPost = (searchInfo) => {
   changeSearchInfo(searchInfo);
   const pagingResponse = getPostList(searchAndPageInfo);
   changeData(pagingResponse);
+  router.push({ name: "postList", query: searchAndPageInfo.value });
 };
 
 /**
@@ -150,6 +151,7 @@ const movePage = (page) => {
   searchAndPageInfo.value.page = page;
   const pagingResponse = getPostList(searchAndPageInfo);
   changeData(pagingResponse);
+  router.push({ name: "postList", query: searchAndPageInfo.value });
 };
 
 /**
