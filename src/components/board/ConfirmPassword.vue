@@ -1,5 +1,5 @@
 <template>
-  <div v-show="props.flag" class="w3-modal">
+  <div class="w3-modal">
     <div class="w3-modal-content">
       <div class="w3-container w3-teal">
         <h3>비밀번호 확인</h3>
@@ -49,7 +49,7 @@
 import { defineProps, ref, defineEmits } from "vue";
 import { checkPassword } from "@/api/postService";
 
-const props = defineProps(["flag", "postId", "parent"]);
+const props = defineProps(["postId", "parent"]);
 const emit = defineEmits(["successConfirm"]);
 
 const inputPassword = ref("");
