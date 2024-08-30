@@ -12,11 +12,29 @@ export const setInterceptors = (axiosService) => {
 
   axiosService.interceptors.response.use(
     (response) => {
+      console.log(response);
       // 서버에 요청을 보내고 나서 응답을 받기 전
+      // - 200번대 응답은 여기서 처리
       return response;
     },
     (error) => {
+      console.log("ERROR >>>", error.response.data);
+      const originalRequest = error.config;
+      console.log(originalRequest);
+
       // 응답이 에러인 경우
+      // - 200번대 외의 응답은 여기서 처리
+
+      if (error.response.status === 400) {
+        alert(error.response.date.message);
+      }
+      if (error.response.status === 404) {
+        alert(error.response.date.message);
+      }
+      if (error.response.status === 500) {
+        alert(error.response.date.message);
+      }
+
       return Promise.reject(error);
     },
   );
