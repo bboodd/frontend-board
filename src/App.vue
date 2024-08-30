@@ -5,16 +5,16 @@
 </template>
 
 <script>
-import PageHeader from '@/components/PageHeader'
-import PageFooter from '@/components/PageFooter'
+import PageFooter from "@/components/PageFooter";
+import PageHeader from "@/components/PageHeader";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     PageHeader,
-    PageFooter
-  }
-}
+    PageFooter,
+  },
+};
 </script>
 
 <style>

@@ -1,16 +1,16 @@
 /* common.css */
-.board-list {
+.post-list {
     width: 1000px;
     margin: auto;
 }
 
-.board-detail {
-    width: 768px;
+.post-detail {
+    width: 1000px;
     margin: auto;
     text-align: left;
 }
 
-.board-contents {
+.post-contents {
     padding: 12px 8px;
     border-bottom: 1px solid #eee;
 }
@@ -18,4 +18,8 @@
 .common-buttons {
     padding: 8px;
     text-align: right;
+}
+.post-write {
+    width: 768px;
+    margin: auto;
 }
