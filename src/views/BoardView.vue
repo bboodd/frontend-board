@@ -1,14 +1,10 @@
 <template>
-    <div>
-        <h2>게시판</h2>
-        <RouterView />
-    </div>
+  <div>
+    <h2>게시판</h2>
+    <RouterView />
+  </div>
 </template>
 
-<script setup>
+<script setup></script>
 
-</script>
-
-<style scoped>
-
-</style>
+<style scoped></style>
