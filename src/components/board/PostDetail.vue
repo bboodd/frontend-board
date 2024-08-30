@@ -65,8 +65,8 @@
 
     <!-- 비밀번호 확인 레이어 -->
     <ConfirmPassword
+      v-show="flag"
       :postId="postId"
-      :flag="flag"
       :parent="parent"
       @cancel-confirm="cancelConfirm"
       @success-confirm="successConfirm"
@@ -102,7 +102,7 @@
 import { useRoute, useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
 import { formatDate } from "@/utils/filters";
-import { getPost } from "@/api/postService";
+import { getPost, deletePost } from "@/api/postService";
 import { getFileList, downloadFile } from "@/api/fileService";
 import PostComment from "./PostComment.vue";
 import ConfirmPassword from "./ConfirmPassword.vue";
@@ -121,21 +121,28 @@ const flag = ref(false);
 const parent = ref("");
 
 onMounted(() => {
-  const postResponse = getPost(postId);
-  postResponse.then((res) => {
+  // 게시글 정보 조회
+  getPost(postId).then((res) => {
     post.value = res;
   });
-
-  const fileResponse = getFileList(postId);
-  fileResponse.then((res) => {
+  // 파일 리스트 정보 조회
+  getFileList(postId).then((res) => {
     fileList.value = res;
   });
 });
 
+/**
+ * 비밀번호 확인 모달 닫기
+ */
 const cancelConfirm = () => {
   flag.value = false;
 };
 
+/**
+ * 비밀번호 확인이 성공했을때
+ * parent 변수에 따라 분기
+ * @param parent - delete or write
+ */
 const successConfirm = (parent) => {
   console.log(parent);
   flag.value = false;
@@ -143,28 +150,40 @@ const successConfirm = (parent) => {
     goWritePage();
   }
   if (parent === "delete") {
-    deletePost();
+    deletePost(postId).then(() => {
+      alert("게시글 삭제 완료");
+    });
   }
 };
 
+/**
+ * 비밀번호 확인 레이어 open
+ * parent value = write
+ */
 const writeConfirm = () => {
   flag.value = true;
   parent.value = "write";
 };
 
+/**
+ * 비밀번호 확인 레이어 open
+ * parent value = delete
+ */
 const deleteConfirm = () => {
   flag.value = true;
   parent.value = "delete";
 };
 
-const deletePost = () => {
-  flag.value = true;
-};
-
+/**
+ * 게시글 수정 페이지 이동 함수
+ */
 const goWritePage = () => {
   router.push({ name: "postUpdate", params: postId, query: route.query });
 };
 
+/**
+ * 리스트 페이지 이동 함수
+ */
 const goListPage = () => {
   router.push({ name: "postList", query: route.query });
 };

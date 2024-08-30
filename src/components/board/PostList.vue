@@ -113,10 +113,17 @@ onMounted(() => {
   changeData(pagingResponse);
 });
 
+/**
+ * 게시글 등록 페이지 이동 함수
+ */
 const goWritePage = () => {
   router.push({ name: "postWrite", query: searchAndPageInfo.value });
 };
 
+/**
+ * 게시글 상세페이지 이동 함수
+ * @param postId - id
+ */
 const goDetailPage = (postId) => {
   router.push({
     name: "postDetail",
@@ -125,18 +132,32 @@ const goDetailPage = (postId) => {
   });
 };
 
+/**
+ * 검색 정보로 게시글 검색
+ * @param searchInfo - 검색 정보
+ */
 const searchPost = (searchInfo) => {
   changeSearchInfo(searchInfo);
   const pagingResponse = getPostList(searchAndPageInfo);
   changeData(pagingResponse);
+  router.push({ name: "postList", query: searchAndPageInfo.value });
 };
 
+/**
+ * 페이지 이동 함수
+ * @param page - 페이징 컴포넌트에서 받은 이동할 페이지
+ */
 const movePage = (page) => {
   searchAndPageInfo.value.page = page;
   const pagingResponse = getPostList(searchAndPageInfo);
   changeData(pagingResponse);
+  router.push({ name: "postList", query: searchAndPageInfo.value });
 };
 
+/**
+ * 게시글 리스트 및 페이지네이션 갱신
+ * @param pagingResponse - 게시글 리스트 정보 및 페이지네이션 정보
+ */
 const changeData = (pagingResponse) => {
   pagingResponse.then((res) => {
     pagination.value = res.pagination;
@@ -144,6 +165,10 @@ const changeData = (pagingResponse) => {
   });
 };
 
+/**
+ * 검색 정보 갱신
+ * @param searchInfo - 검색 컴포넌트에서 받은 검색 정보
+ */
 const changeSearchInfo = (searchInfo) => {
   searchAndPageInfo.value.startDate = searchInfo.startDate;
   searchAndPageInfo.value.endDate = searchInfo.endDate;

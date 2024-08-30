@@ -1,5 +1,5 @@
 <template>
-  <div v-show="props.flag" class="w3-modal">
+  <div class="w3-modal">
     <div class="w3-modal-content">
       <div class="w3-container w3-teal">
         <h3>비밀번호 확인</h3>
@@ -49,26 +49,27 @@
 import { defineProps, ref, defineEmits } from "vue";
 import { checkPassword } from "@/api/postService";
 
-const props = defineProps(["flag", "postId", "parent"]);
+const props = defineProps(["postId", "parent"]);
 const emit = defineEmits(["successConfirm"]);
 
 const inputPassword = ref("");
 
+/**
+ * 비밀번호 입력후 확인버튼 onClick 함수
+ */
 const confirm = () => {
   if (!inputPassword.value) {
     alert("비밀번호를 입력해 주세요");
     return false;
   }
-  checkPassword(props.postId, inputPassword.value)
-    .then((res) => {
-      console.log(res);
-      emit("success-confirm", props.parent);
-    })
-    .catch((err) => {
-      console.log(err);
-      alert("비밀번호가 일치하지 않습니다.");
-      inputPassword.value = "";
-    });
+  // 비밀번호 일치여부 확인
+  checkPassword(props.postId, inputPassword.value).then((res) => {
+    console.log(res);
+    // delete or write
+    emit("success-confirm", props.parent);
+  });
+
+  inputPassword.value = "";
 };
 </script>
 <style scoped>
