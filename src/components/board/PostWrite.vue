@@ -206,6 +206,7 @@ import { getCategoryList } from "@/api/categoryService";
 import { formatDate } from "@/utils/filters";
 import { getFileList } from "@/api/fileService";
 import { downloadFile } from "@/api/fileService";
+import { validateEmpty } from "@/utils/validation";
 
 const route = useRoute();
 
@@ -257,6 +258,7 @@ const nextClickFunc = (e) => {
 };
 
 const saveBtn = () => {
+  validation();
   if (postId) {
     updatePost(postId, requestPost.value).then(() => {
       router.push({
@@ -333,6 +335,21 @@ const removeFile = (e, idx, fileId) => {
   }
 
   requestPost.value.files.splice(idx, 1);
+};
+
+const validation = () => {
+  const fields = [
+    requestPost.value.writer,
+    requestPost.value.password,
+    requestPost.value.checkPassword,
+    requestPost.value.title,
+    requestPost.value.content,
+  ];
+  const fieldNames = ["이름", "비밀번호", "비밀번호확인", "제목", "내용"];
+
+  for (let i = 0, len = fields.length; i < len; i++) {
+    validateEmpty(fields[i], fieldNames[i]);
+  }
 };
 </script>
 

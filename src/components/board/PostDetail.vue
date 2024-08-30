@@ -61,45 +61,29 @@
     <div>&nbsp;</div>
 
     <!--/* 댓글 렌더링 영역 */-->
-    <div class="cm_list" />
+    <PostComment :postId="postId" />
 
-    <!--/* 댓글 작성 */-->
-    <div class="cm_write">
-      <fieldset>
-        <!-- <legend class="skipinfo">댓글 입력</legend> -->
-        <div class="cm_input">
-          <p>
-            <textarea
-              id="content"
-              name="content"
-              onkeyup="countingLength(this);"
-              cols="90"
-              rows="4"
-              placeholder="댓글을 입력해 주세요."
-            />
-          </p>
-          <span
-            ><button type="button" class="btns" onclick="saveComment();">
-              등 록
-            </button>
-            <i id="counter">0/300자</i></span
-          >
-        </div>
-      </fieldset>
-    </div>
+    <!-- 비밀번호 확인 레이어 -->
+    <ConfirmPassword
+      :postId="postId"
+      :flag="flag"
+      :parent="parent"
+      @cancel-confirm="cancelConfirm"
+      @success-confirm="successConfirm"
+    />
 
     <div class="common-buttons">
       <button
         type="button"
         class="w3-button w3-round w3-blue-gray"
-        @click="goWritePage"
+        @click="writeConfirm"
       >
         수정</button
       >&nbsp;
       <button
         type="button"
         class="w3-button w3-round w3-red"
-        @click="deletePost"
+        @click="deleteConfirm"
       >
         삭제</button
       >&nbsp;
@@ -120,6 +104,8 @@ import { onMounted, ref } from "vue";
 import { formatDate } from "@/utils/filters";
 import { getPost } from "@/api/postService";
 import { getFileList, downloadFile } from "@/api/fileService";
+import PostComment from "./PostComment.vue";
+import ConfirmPassword from "./ConfirmPassword.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -129,6 +115,10 @@ const { postId } = route.params;
 const post = ref({});
 
 const fileList = ref([]);
+
+const flag = ref(false);
+
+const parent = ref("");
 
 onMounted(() => {
   const postResponse = getPost(postId);
@@ -142,11 +132,38 @@ onMounted(() => {
   });
 });
 
+const cancelConfirm = () => {
+  flag.value = false;
+};
+
+const successConfirm = (parent) => {
+  console.log(parent);
+  flag.value = false;
+  if (parent === "write") {
+    goWritePage();
+  }
+  if (parent === "delete") {
+    deletePost();
+  }
+};
+
+const writeConfirm = () => {
+  flag.value = true;
+  parent.value = "write";
+};
+
+const deleteConfirm = () => {
+  flag.value = true;
+  parent.value = "delete";
+};
+
+const deletePost = () => {
+  flag.value = true;
+};
+
 const goWritePage = () => {
   router.push({ name: "postUpdate", params: postId, query: route.query });
 };
-
-const deletePost = () => {};
 
 const goListPage = () => {
   router.push({ name: "postList", query: route.query });
