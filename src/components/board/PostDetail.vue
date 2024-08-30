@@ -65,8 +65,8 @@
 
     <!-- 비밀번호 확인 레이어 -->
     <ConfirmPassword
+      v-show="flag"
       :postId="postId"
-      :flag="flag"
       :parent="parent"
       @cancel-confirm="cancelConfirm"
       @success-confirm="successConfirm"
