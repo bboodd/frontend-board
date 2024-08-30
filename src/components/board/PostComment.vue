@@ -68,6 +68,10 @@ onMounted(() => {
   });
 });
 
+/**
+ * 댓글 저장 함수
+ * 저장 성공시 댓글 리스트 조회
+ */
 const saveBtn = () => {
   validation();
   saveComment(props.postId, requestComment.value).then(() => {
@@ -80,6 +84,9 @@ const saveBtn = () => {
   });
 };
 
+/**
+ * 댓글 입력 내용 유효성 검증
+ */
 const validation = () => {
   const fields = [commentList.value.content];
   const fieldNames = ["댓글내용"];
@@ -89,6 +96,10 @@ const validation = () => {
   }
 };
 
+/**
+ * 댓글 입력 길이 onKeyup 함수
+ * @param e - event
+ */
 const countingLength = (e) => {
   if (e.target.value > 300) {
     alert("댓글을 300자 이하로 입력해 주세요.");

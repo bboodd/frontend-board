@@ -121,21 +121,28 @@ const flag = ref(false);
 const parent = ref("");
 
 onMounted(() => {
-  const postResponse = getPost(postId);
-  postResponse.then((res) => {
+  // 게시글 정보 조회
+  getPost(postId).then((res) => {
     post.value = res;
   });
-
-  const fileResponse = getFileList(postId);
-  fileResponse.then((res) => {
+  // 파일 리스트 정보 조회
+  getFileList(postId).then((res) => {
     fileList.value = res;
   });
 });
 
+/**
+ * 비밀번호 확인 모달 닫기
+ */
 const cancelConfirm = () => {
   flag.value = false;
 };
 
+/**
+ * 비밀번호 확인이 성공했을때
+ * parent 변수에 따라 분기
+ * @param parent - delete or write
+ */
 const successConfirm = (parent) => {
   console.log(parent);
   flag.value = false;
@@ -149,11 +156,19 @@ const successConfirm = (parent) => {
   }
 };
 
+/**
+ * 비밀번호 확인 레이어 open
+ * parent value = write
+ */
 const writeConfirm = () => {
   flag.value = true;
   parent.value = "write";
 };
 
+/**
+ * 비밀번호 확인 레이어 open
+ * parent value = delete
+ */
 const deleteConfirm = () => {
   flag.value = true;
   parent.value = "delete";

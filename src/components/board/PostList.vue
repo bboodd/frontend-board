@@ -114,7 +114,7 @@ onMounted(() => {
 });
 
 /**
- * 게시글 수정 페이지 이동 함수
+ * 게시글 등록 페이지 이동 함수
  */
 const goWritePage = () => {
   router.push({ name: "postWrite", query: searchAndPageInfo.value });
