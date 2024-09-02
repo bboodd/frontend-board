@@ -16,7 +16,7 @@
               <th scope="row">비밀번호</th>
               <td>
                 <input
-                  v-model="inputPassword"
+                  v-model="requestPassword.inputPassword"
                   type="password"
                   placeholder="비밀번호 입력"
                 />
@@ -52,24 +52,29 @@ import { checkPassword } from "@/api/postService";
 const props = defineProps(["postId", "parent"]);
 const emit = defineEmits(["successConfirm"]);
 
-const inputPassword = ref("");
+const requestPassword = ref({
+  inputPassword: "",
+});
 
 /**
  * 비밀번호 입력후 확인버튼 onClick 함수
  */
 const confirm = () => {
-  if (!inputPassword.value) {
+  if (!requestPassword.value.inputPassword) {
     alert("비밀번호를 입력해 주세요");
     return false;
   }
   // 비밀번호 일치여부 확인
-  checkPassword(props.postId, inputPassword.value).then((res) => {
-    console.log(res);
-    // delete or write
-    emit("success-confirm", props.parent);
-  });
+  checkPassword(props.postId, requestPassword.value)
+    .then(() => {
+      // delete or write
+      emit("success-confirm", props.parent);
+    })
+    .catch((err) => {
+      alert(err.response.data.message);
+    });
 
-  inputPassword.value = "";
+  requestPassword.value.inputPassword = "";
 };
 </script>
 <style scoped>

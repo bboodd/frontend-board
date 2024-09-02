@@ -39,7 +39,7 @@ const updatePost = async (postId, post) => {
 
 // 게시글 비밀번호 체크
 const checkPassword = async (postId, password) => {
-  return await postsAxios.post(`${postId}/password`, password);
+  return await postsAxios.post(`/${postId}/password`, password);
 };
 
 export {

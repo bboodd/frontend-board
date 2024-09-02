@@ -25,15 +25,15 @@ export const setInterceptors = (axiosService) => {
       // 응답이 에러인 경우
       // - 200번대 외의 응답은 여기서 처리
 
-      if (error.response.status === 400) {
-        alert(error.response.date.message);
-      }
-      if (error.response.status === 404) {
-        alert(error.response.date.message);
-      }
-      if (error.response.status === 500) {
-        alert(error.response.date.message);
-      }
+      // if (error.response.status === 400) {
+      //   alert(error.response.data.message);
+      // }
+      // if (error.response.status === 404) {
+      //   alert(error.response.data.message);
+      // }
+      // if (error.response.status === 500) {
+      //   alert(error.response.data.error);
+      // }
 
       return Promise.reject(error);
     },
