@@ -13,7 +13,7 @@
 ![img.png](상세.png)
 
 비밀번호 확인
-![img.png](비밀번호 확인.png)
+![img.png](비밀번호%20확인.png)
 
 ## Project setup
 ```
