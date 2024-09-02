@@ -144,7 +144,6 @@ const cancelConfirm = () => {
  * @param parent - delete or write
  */
 const successConfirm = (parent) => {
-  console.log(parent);
   flag.value = false;
   if (parent === "write") {
     goWritePage();
